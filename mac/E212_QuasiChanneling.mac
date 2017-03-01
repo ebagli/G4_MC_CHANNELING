@@ -1,0 +1,20 @@
+/xtal/setMaterial G4_Si
+/xtal/setSize 50. 50. 0.06 mm
+/xtal/setAngle 0.0 0.0 0.0 degree
+/xtal/setBR 0.1613 0.0 0.0 m
+/xtal/setEC data/Si111pl
+
+/run/initialize
+/gps/particle e+
+/gps/ene/mono 20.35 GeV
+/gps/ang/rot1 1 0 0
+/gps/ang/rot2 0 -1 0
+/gps/ang/type beam2d
+
+/gps/ang/sigma_x 20.E-6 rad
+/gps/ang/sigma_y 20.E-6 rad
+
+/gps/pos/type Point
+/gps/pos/centre 0. 0. -21. cm
+/run/beamOn 10000
+
