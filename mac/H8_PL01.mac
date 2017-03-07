@@ -6,9 +6,9 @@
 /mydet/setDistance4  +10945. mm
 
 /xtal/setMaterial G4_Si
-/xtal/setSize 50. 50. 55. mm
+/xtal/setSize 50. 50. 20. mm
 /xtal/setAngle 0.0 0.0 0.0 rad
-/xtal/setBR 229.17 0.0 0.0 m
+/xtal/setBR 83.3333 0.0 0.0 m
 /xtal/setEC data/Si220pl
 
 /run/initialize

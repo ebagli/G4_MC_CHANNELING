@@ -69,6 +69,7 @@ class DetectorConstructionMessenger: public G4UImessenger
     G4UIcmdWithAString*  fXtalMaterialCmd;
     G4UIcmdWith3VectorAndUnit* fXtalSizeCmd;
     G4UIcmdWith3VectorAndUnit* fXtalBRCmd;
+    G4UIcmdWithAString*  fXtalBRFileNameCmd;
     G4UIcmdWith3VectorAndUnit* fXtalAngleCmd;
     G4UIcmdWithAString*  fXtalECCmd;
     G4UIcmdWithAString*  fXtalECOCmd;

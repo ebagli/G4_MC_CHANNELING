@@ -67,6 +67,7 @@ fECOfileName(""),
 fMaterialName("G4_Si"),
 fSizes(G4ThreeVector(0.,0.,0.)),
 fBR(G4ThreeVector(0.,0.,0.)),
+fBRFileName(""),
 fAngles(G4ThreeVector(0.,0.,0.)),
 fDetectorMaterialName(""),
 fDetectorSizes(G4ThreeVector(50. * CLHEP::mm,50. * CLHEP::mm,1 * CLHEP::mm)),
@@ -172,7 +173,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
     Crystal->RegisterExtension(std::unique_ptr<G4ChannelingMaterialData>(new G4ChannelingMaterialData("channeling")));
     G4ChannelingMaterialData* crystalChannelingData = (G4ChannelingMaterialData*)Crystal->RetrieveExtension("channeling");
     crystalChannelingData->SetFilename(fECfileName);
-    crystalChannelingData->SetBR(fBR);
+
+    if(fBRFileName != ""){
+        crystalChannelingData->SetBR(fBRFileName);
+    }
+    else if(fBR!=G4ThreeVector()){
+        crystalChannelingData->SetBR(fBR.x());
+    }
     
     G4LogicalCrystalVolume* crystalLogic = new G4LogicalCrystalVolume(crystalSolid,
                                                                       Crystal,

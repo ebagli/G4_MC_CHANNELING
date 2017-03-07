@@ -73,6 +73,9 @@ public:
     G4ThreeVector GetBR() {return fBR;}
     void SetBR(G4ThreeVector a3vec) {fBR = a3vec;}
 
+    G4String GetBRFileName() {return fBRFileName;}
+    void SetBRFileName(G4String aString) {fBRFileName = aString;}
+
     G4ThreeVector GetAngles() {return fAngles;}
     void SetAngles(G4ThreeVector a3vec) {fAngles = a3vec;}
 
@@ -82,6 +85,7 @@ private:
     G4String fMaterialName;
     G4ThreeVector fSizes;
     G4ThreeVector fBR;
+    G4String fBRFileName;
     G4ThreeVector fAngles;
 
 

@@ -69,6 +69,15 @@ DetectorConstructionMessenger(
     fXtalBRCmd->SetDefaultValue(G4ThreeVector(0.,0.,0.));
     fXtalBRCmd->SetDefaultUnit("m");
     
+    
+    fXtalBRFileNameCmd = new G4UIcmdWithAString("/xtal/setBRFileName",
+                                             this);
+    fXtalBRFileNameCmd->SetGuidance("Set crystal bending radius file name.");
+    fXtalBRFileNameCmd->SetParameterName("xtalBRFileName",true);
+    fXtalBRFileNameCmd->SetDefaultValue("");
+
+    
+    
     fXtalAngleCmd = new G4UIcmdWith3VectorAndUnit("/xtal/setAngle",this);
     fXtalAngleCmd->SetGuidance("Set crystal angles.");
     fXtalAngleCmd->SetParameterName("xtalAngleX",
@@ -134,7 +143,8 @@ DetectorConstructionMessenger::
     delete fXtalAngleCmd;
     delete fXtalECCmd;
     delete fXtalECOCmd;
-    
+    delete fXtalBRFileNameCmd;
+    delete fXtalBRCmd;
     delete fDetMaterialCmd;
     delete fDetSizesCmd;
     for(int i = 0;i<4;i++){
@@ -155,6 +165,9 @@ void DetectorConstructionMessenger::SetNewValue(
     }
     if(command==fXtalBRCmd ){
         fTarget->SetBR(fXtalBRCmd->GetNew3VectorValue(newValue));
+    }
+    if(command==fXtalBRFileNameCmd ){
+        fTarget->SetBRFileName(newValue);
     }
     if(command==fXtalAngleCmd ){
         fTarget->SetAngles(fXtalAngleCmd->GetNew3VectorValue(newValue));
@@ -194,6 +207,9 @@ G4String DetectorConstructionMessenger::GetCurrentValue(
     }
     if( command==fXtalBRCmd ){
         cv = fXtalBRCmd->ConvertToString(fTarget->GetBR(),"m");
+    }
+    if( command==fXtalBRFileNameCmd ){
+        cv = fTarget->GetBRFileName();
     }
     if( command==fXtalAngleCmd ){
         cv = fXtalAngleCmd->ConvertToString(fTarget->GetAngles(),"rad");

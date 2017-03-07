@@ -36,6 +36,7 @@
 #include "G4StepPoint.hh"
 #include "G4Track.hh"
 #include <unordered_map>
+#include "G4PhysicsLinearVector.hh"
 
 class G4ChannelingMaterialData : public G4VMaterialExtension{
 public:
@@ -77,21 +78,19 @@ private:
     std::unordered_map<std::string,G4ChannelingECHARM*> fElectronDensityElement;
     
 public:
-    G4bool IsBent() {
-        if(fBR!=G4ThreeVector()){
-            return true;
-        }
-        return false;
+    virtual G4bool IsBent() {
+        return bIsBent;
     };
     
-    G4ThreeVector GetBR(G4ThreeVector&) {
-        return fBR;
+    virtual G4ThreeVector GetBR(G4ThreeVector& v3) {
+        return G4ThreeVector(fVectorR->Value(v3.z()),0.,0.);
     };
-    void SetBR(G4ThreeVector a3vec) {fBR=a3vec;};
-    
-private:
-    G4ThreeVector fBR;
+    virtual void SetBR(const G4String&);
+    virtual void SetBR(G4double);
 
+protected:
+    G4PhysicsVector* fVectorR;
+    G4bool bIsBent;
 };
 
 #endif

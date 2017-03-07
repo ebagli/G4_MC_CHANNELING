@@ -35,7 +35,8 @@
 #include "G4Box.hh"
 
 G4ChannelingMaterialData::G4ChannelingMaterialData(const G4String& name):
-G4VMaterialExtension(name){;}
+G4VMaterialExtension(name),
+bIsBent(false){;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
@@ -81,6 +82,33 @@ void G4ChannelingMaterialData::SetFilenameElement(const G4String& fileName,std::
     G4cout <<  fileElD << G4endl;
 }
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4ChannelingMaterialData::SetBR(G4double val){
+    fVectorR = new G4PhysicsLinearVector(0,DBL_MAX,2);
+    fVectorR->PutValue(0,val);
+    fVectorR->PutValue(1,val);
+    bIsBent = true;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void G4ChannelingMaterialData::SetBR(const G4String& filename){
+    std::ifstream vFileIn;
+    int points;
+    float maximum;
+    vFileIn.open(filename);
+    vFileIn >> points >> maximum;
+    
+    fVectorR = new G4PhysicsLinearVector(0,maximum * CLHEP::millimeter,points);
+    double vTempX;
+    for(G4int i0=0;i0<points; i0++){
+        vFileIn >> vTempX;
+        fVectorR->PutValue(i0,vTempX * CLHEP::meter);
+    }
+    bIsBent = true;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
