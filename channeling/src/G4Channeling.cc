@@ -208,7 +208,6 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             posk2 = step / mom.z() * (mom + momk1 * 0.5);
             momk2 = step / beta * Z * efxy;
             if(isBent) momk2.setX(momk2.x() - step * mom.z() * beta / (GetMatData(aTrack)->GetBR(pos_temp)).x());
-            G4cout << pos_temp.z()/CLHEP::millimeter << " " << GetMatData(aTrack)->GetBR(pos_temp).x()/CLHEP::meter << G4endl;
 
             GetEF(aTrack,pos_temp = pos + posk2 * 0.5,efxy);
             posk3 = step / mom.z() * (mom + momk2 * 0.5);
