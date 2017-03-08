@@ -9,6 +9,7 @@
 /xtal/setSize 50. 50. 56.8 mm
 /xtal/setAngle 0.0 0.0 0.0 rad
 /xtal/setBR 133.64 0.0 0.0 m
+/xtal/setBRFileName mac/PL03_R.txt
 /xtal/setEC data/Si220pl
 
 /run/initialize

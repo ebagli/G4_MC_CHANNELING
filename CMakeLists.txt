@@ -43,7 +43,7 @@ foreach(_dat ${_data})
 	)
 endforeach()
 
-file(GLOB _mac RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/mac/*.mac)
+file(GLOB _mac RELATIVE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/mac/*)
 foreach(_mac ${_mac})
      configure_file(
 	${PROJECT_SOURCE_DIR}/${_mac}

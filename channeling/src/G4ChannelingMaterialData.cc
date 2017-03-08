@@ -103,10 +103,18 @@ void G4ChannelingMaterialData::SetBR(const G4String& filename){
     
     fVectorR = new G4PhysicsLinearVector(0,maximum * CLHEP::millimeter,points);
     double vTempX;
+    double maximumY = -DBL_MAX;
+    double minimumY = +DBL_MAX;
     for(G4int i0=0;i0<points; i0++){
         vFileIn >> vTempX;
+        if(vTempX>maximumY) maximumY = vTempX;
+        if(vTempX<minimumY) minimumY = vTempX;
         fVectorR->PutValue(i0,vTempX * CLHEP::meter);
     }
+    G4cout << "G4ChannelingMaterialData::SetBR()" << G4endl;
+    G4cout << "Filename: " << filename << G4endl;
+    G4cout << "Point: " << points << " - Length [mm]: " << maximum << G4endl;
+    G4cout << "Maximum Radius [m]: " << maximumY << " - Minimum Radius [m]: " << minimumY << G4endl;
     bIsBent = true;
 }
 
