@@ -23,12 +23,51 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+//
+// $Id: G4EmStandardPhysicsSS_Channeling.hh 66704 2013-01-10 18:20:17Z gunter $
+//
+//---------------------------------------------------------------------------
+//
+// ClassName:   G4EmStandardPhysicsSS_Channeling
+//
+// Author:      V.Ivanchenko 16.10.2014
+//
+// Modified:
+//
+//----------------------------------------------------------------------------
+//
+// This class provides construction of default EM standard physics
+//
 
-#ifndef Analysis_h
-#define Analysis_h 1
+#ifndef G4EmStandardPhysicsSS_Channeling_h
+#define G4EmStandardPhysicsSS_Channeling_h 1
 
-#include "g4root.hh"
-//#include "g4xml.hh"
-//#include "g4csv.hh"
+#include "G4VPhysicsConstructor.hh"
+#include "globals.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+class G4EmStandardPhysicsSS_Channeling : public G4VPhysicsConstructor
+{
+public:
+
+  explicit G4EmStandardPhysicsSS_Channeling(G4int ver = 1);
+
+  virtual ~G4EmStandardPhysicsSS_Channeling();
+
+  virtual void ConstructParticle();
+  virtual void ConstructProcess();
+
+private:
+  G4int  verbose;
+};
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
+
+
+
+
+
+

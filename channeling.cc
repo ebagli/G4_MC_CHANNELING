@@ -43,8 +43,7 @@
 
 #include "QGSP_BIC.hh"
 
-#include "G4EmStandardPhysicsSS.hh"
-#include "G4EmStandardPhysics_option4.hh"
+#include "G4EmStandardPhysicsSS_Channeling.hh"
 #include "PhysicsList.hh"
 #include "G4ChannelingPhysics.hh"
 #include "G4GenericBiasingPhysics.hh"
@@ -65,7 +64,7 @@ int main(int argc,char** argv)
     G4VModularPhysicsList* physlist= new QGSP_BIC();
     G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
     physlist->RegisterPhysics(new G4ChannelingPhysics());
-    physlist->ReplacePhysics(new G4EmStandardPhysicsSS());
+    physlist->ReplacePhysics(new G4EmStandardPhysicsSS_Channeling());
     biasingPhysics->PhysicsBiasAllCharged();
     physlist->RegisterPhysics(biasingPhysics);
     

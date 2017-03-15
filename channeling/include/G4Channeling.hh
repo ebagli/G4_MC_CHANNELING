@@ -127,6 +127,7 @@ private:
     G4double fTransverseVariationMax;
     
     const G4ThreeVector k010;
+    G4ThreeVector fSpin;
 };
 
 #endif

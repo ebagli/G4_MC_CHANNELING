@@ -57,6 +57,9 @@ RunAction::RunAction(): G4UserRunAction(){
     analysisManager->CreateNtupleDColumn("efy");
     analysisManager->CreateNtupleDColumn("nud");
     analysisManager->CreateNtupleDColumn("eld");
+    analysisManager->CreateNtupleDColumn("sx");
+    analysisManager->CreateNtupleDColumn("sy");
+    analysisManager->CreateNtupleDColumn("sz");
     analysisManager->FinishNtuple();
     
 }

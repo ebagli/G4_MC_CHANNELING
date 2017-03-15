@@ -1,5 +1,5 @@
 /mydet/setDetMaterial G4_Si
-/mydet/setSize 50. 50. 0.6 mm
+/mydet/setSize 500. 500. 0.6 mm
 /mydet/setDistance1 -10087. mm
 /mydet/setDistance2  -332 mm
 /mydet/setDistance3  +493. mm

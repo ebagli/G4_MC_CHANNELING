@@ -68,7 +68,10 @@ void EventAction::EndOfEventAction(const G4Event* evt){
     ssd[1]= G4ThreeVector(0.,0.,0.);
     ssd[2]= G4ThreeVector(0.,0.,0.);
     ssd[3]= G4ThreeVector(0.,0.,0.);
-    
+    G4double sx = 0.;
+    G4double sy = 0.;
+    G4double sz = 0.;
+
     if(sdht_ID == -1) {
         G4String sdName;
         if(SDman->FindSensitiveDetector(sdName="telescope",0)){
@@ -98,6 +101,11 @@ void EventAction::EndOfEventAction(const G4Event* evt){
                     ssd[i2] = aHit->GetWorldPos();
                     bTotalHits++;
                 }
+                if(aHit->GetLayerID()==2) {
+                    sx   = (aHit->GetSpin()).x();
+                    sy   = (aHit->GetSpin()).y();
+                    sz   = (aHit->GetSpin()).z();
+                }
             }
         }
     }
@@ -107,13 +115,13 @@ void EventAction::EndOfEventAction(const G4Event* evt){
     G4double efyavg = 0.;
     G4double nudavg = 0.;
     G4double eldavg = 0.;
-    G4double steptot = 0.;
     
     G4double efx;
     G4double efy;
     G4double nud;
     G4double eld;
-    
+
+    G4double steptot = 0.;
     G4double step;
 
     if(sdct_ID == -1) {
@@ -139,10 +147,10 @@ void EventAction::EndOfEventAction(const G4Event* evt){
         for(int i1=0;i1<n_hit_sd;i1++){
             CrystalDetectorHit* aHit = (*sdct)[i1];
             step = aHit->GetStep();
-            efx = aHit->GetEFX();
-            efy = aHit->GetEFY();
-            nud = aHit->GetNud();
-            eld = aHit->GetEld();
+            efx  = aHit->GetEFX();
+            efy  = aHit->GetEFY();
+            nud  = aHit->GetNud();
+            eld  = aHit->GetEld();
 
             steptot += step;
             efxavg  += efx * step;
@@ -155,10 +163,14 @@ void EventAction::EndOfEventAction(const G4Event* evt){
     if(steptot>0.){
         efxavg /= steptot;
         efyavg /= steptot;
+        nudavg /= steptot;
+        eldavg /= steptot;
     }
     else{
         efxavg = 0.;
         efyavg = 0.;
+        nudavg = 0.;
+        eldavg = 0.;
     }
     
     if(bTotalHits > 1){
@@ -188,11 +200,13 @@ void EventAction::EndOfEventAction(const G4Event* evt){
             analysisManager->FillNtupleDColumn(5, -9999.);
         }
         
-        
         analysisManager->FillNtupleDColumn(6, efxavg / CLHEP::eV * CLHEP::angstrom);
         analysisManager->FillNtupleDColumn(7, efyavg / CLHEP::eV * CLHEP::angstrom);
         analysisManager->FillNtupleDColumn(8, nudavg);
         analysisManager->FillNtupleDColumn(9, eldavg);
+        analysisManager->FillNtupleDColumn(10, sx);
+        analysisManager->FillNtupleDColumn(11, sy);
+        analysisManager->FillNtupleDColumn(12, sz);
         analysisManager->AddNtupleRow();
     }
 }

@@ -81,6 +81,7 @@ G4bool SensitiveDetector::ProcessHits(G4Step*aStep,
         new SensitiveDetectorHit(copyNo);
     aHit->SetLayerID(copyNo);
     aHit->SetWorldPos(worldPos);
+    aHit->SetSpin(aStep->GetTrack()->GetPolarization());
     
     fHitsCollection->insert(aHit);
     return true;
