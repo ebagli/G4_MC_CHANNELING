@@ -46,6 +46,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 public:
     
     DetectorConstruction();
+    DetectorConstruction(G4bool);
     ~DetectorConstruction();
     
     void DefineMaterials();
@@ -90,11 +91,15 @@ private:
 
 
 private:
+    G4String fWorldMaterial;
     G4String fDetectorMaterialName;
     G4ThreeVector fDetectorSizes;
-    G4double fDetectorDistance[4];
+    G4double fDetectorDistance[5];
 
 public:
+    void SetWorldMaterial(G4String aString) {fWorldMaterial = aString;}
+    G4String GetWorldMaterial() {return fWorldMaterial;}
+
     void SetDetectorMaterial(G4String aString) {fDetectorMaterialName = aString;}
     G4String GetDetectorMaterial() {return fDetectorMaterialName;}
     
@@ -103,6 +108,9 @@ public:
 
     void SetDetectorDistance(G4int aInt,G4double aDouble) {fDetectorDistance[aInt] = aDouble;}
     G4double GetDetectorDistance(G4int aInt) {return fDetectorDistance[aInt];}
+    
+private:
+    G4bool fCrystalAmorphous;
 };
 
 

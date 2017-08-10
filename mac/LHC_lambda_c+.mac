@@ -1,0 +1,29 @@
+/mydet/setDetMaterial G4_Galactic
+/mydet/setSize 50. 50. 0.1 mm
+/mydet/setDistance1 -50. mm
+/mydet/setDistance2  -40 mm
+/mydet/setDistance3  +40. mm
+/mydet/setDistance4  +50. mm
+
+/xtal/setMaterial G4_Si
+/xtal/setSize 50. 50. 50. mm
+/xtal/setAngle 0.0 0.0 0.0 degree
+/xtal/setBR 10. 0.0 0.0 m
+/xtal/setEC data/Si220pl
+
+/run/initialize
+/gps/particle lambda_c+
+/gps/ene/mono 2. TeV
+/gps/ang/rot1 1 0 0
+/gps/ang/rot2 0 -1 0
+/gps/ang/type beam2d
+
+/gps/ang/sigma_x 0.E-6 rad
+/gps/ang/sigma_y 0.E-6 rad
+
+/gps/polarization 0.5 0. 0.
+
+/gps/pos/type Point
+/gps/pos/centre 0. 0. -51. mm
+/run/beamOn 10000
+

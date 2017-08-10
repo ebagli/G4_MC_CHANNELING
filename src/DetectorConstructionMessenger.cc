@@ -44,6 +44,13 @@ DetectorConstructionMessenger(
     fMyXtalDirectory = new G4UIdirectory("/xtal/");
     fMyXtalDirectory->SetGuidance("Crystal setup control commands.");
     
+    fWorldMaterial = new G4UIcmdWithAString("/mydet/setWorldMaterial",
+                                              this);
+    fWorldMaterial->SetGuidance("Set world material.");
+    fWorldMaterial->SetParameterName("worldMat",true);
+    fWorldMaterial->SetDefaultValue("G4_Galactic");
+
+    
     fXtalMaterialCmd = new G4UIcmdWithAString("/xtal/setMaterial",
                                               this);
     fXtalMaterialCmd->SetGuidance("Set crystal material.");
@@ -122,8 +129,8 @@ DetectorConstructionMessenger(
     fDetSizesCmd->SetDefaultValue(G4ThreeVector(50.,50.,1.));
     fDetSizesCmd->SetDefaultUnit("mm");
     
-    G4double defaultDistances[4] = {-20.,-19.,+19,+20.};
-    for(int i = 0;i<4;i++){
+    G4double defaultDistances[5] = {-20.,-19.,+19,+20.,+40.};
+    for(int i = 0;i<5;i++){
         G4String command = "/mydet/setDistance" + std::to_string(i+1);
         fDetDistanceCmd[i] = new G4UIcmdWithADoubleAndUnit(command,this);
         fDetDistanceCmd[i]->SetGuidance("Set detector size.");
@@ -138,6 +145,7 @@ DetectorConstructionMessenger(
 
 DetectorConstructionMessenger::
 ~DetectorConstructionMessenger(){
+    delete fWorldMaterial;
     delete fXtalMaterialCmd;
     delete fXtalSizeCmd;
     delete fXtalAngleCmd;
@@ -147,7 +155,7 @@ DetectorConstructionMessenger::
     delete fXtalBRCmd;
     delete fDetMaterialCmd;
     delete fDetSizesCmd;
-    for(int i = 0;i<4;i++){
+    for(int i = 0;i<5;i++){
         delete fDetDistanceCmd[i];
     }
 }
@@ -157,6 +165,9 @@ DetectorConstructionMessenger::
 void DetectorConstructionMessenger::SetNewValue(
                                                 G4UIcommand *command,
                                                 G4String newValue){
+    if(command==fWorldMaterial ){
+        fTarget->SetWorldMaterial(newValue);
+    }
     if(command==fXtalMaterialCmd ){
         fTarget->SetMaterial(newValue);
     }
@@ -186,7 +197,7 @@ void DetectorConstructionMessenger::SetNewValue(
     if(command==fDetSizesCmd ){
         fTarget->SetDetectorSizes(fDetSizesCmd->GetNew3VectorValue(newValue));
     }
-    for(int i = 0;i<4;i++){
+    for(int i = 0;i<5;i++){
         if(command==fDetDistanceCmd[i]){
             fTarget->SetDetectorDistance(i,fDetDistanceCmd[i]->GetNewDoubleValue(newValue));
         }
@@ -199,6 +210,9 @@ G4String DetectorConstructionMessenger::GetCurrentValue(
                                                         G4UIcommand * command){
     G4String cv;
     
+    if( command==fWorldMaterial ){
+        cv = fTarget->GetWorldMaterial();
+    }
     if( command==fXtalMaterialCmd ){
         cv = fTarget->GetMaterial();
     }
@@ -227,7 +241,7 @@ G4String DetectorConstructionMessenger::GetCurrentValue(
     if( command==fDetSizesCmd ){
         cv = fDetSizesCmd->ConvertToString(fTarget->GetDetectorSizes(),"mm");
     }
-    for(int i = 0;i<4;i++){
+    for(int i = 0;i<5;i++){
         if( command==fDetDistanceCmd[i] ){
             cv = fDetDistanceCmd[i]->ConvertToString(fTarget->GetDetectorDistance(i),"mm");
         }

@@ -69,12 +69,33 @@ fSizes(G4ThreeVector(0.,0.,0.)),
 fBR(G4ThreeVector(0.,0.,0.)),
 fBRFileName(""),
 fAngles(G4ThreeVector(0.,0.,0.)),
+fWorldMaterial("G4_Galactic"),
 fDetectorMaterialName(""),
 fDetectorSizes(G4ThreeVector(50. * CLHEP::mm,50. * CLHEP::mm,1 * CLHEP::mm)),
-fDetectorDistance{-20. * CLHEP::cm,-19. * CLHEP::cm,+19. * CLHEP::cm,+20. * CLHEP::cm}{
+fDetectorDistance{-20. * CLHEP::cm,-19. * CLHEP::cm,+19. * CLHEP::cm,+20. * CLHEP::cm,+40. * CLHEP::cm},
+fCrystalAmorphous(false){
     fMessenger = new DetectorConstructionMessenger(this);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+DetectorConstruction::DetectorConstruction(G4bool aBool):
+fECfileName("Si220pl"),
+fECOfileName(""),
+fMaterialName("G4_Si"),
+fSizes(G4ThreeVector(0.,0.,0.)),
+fBR(G4ThreeVector(0.,0.,0.)),
+fBRFileName(""),
+fAngles(G4ThreeVector(0.,0.,0.)),
+fWorldMaterial("G4_Galactic"),
+fDetectorMaterialName(""),
+fDetectorSizes(G4ThreeVector(50. * CLHEP::mm,50. * CLHEP::mm,1 * CLHEP::mm)),
+fDetectorDistance{-20. * CLHEP::cm,-19. * CLHEP::cm,+19. * CLHEP::cm,+20. * CLHEP::cm,+40. * CLHEP::cm},
+fCrystalAmorphous(aBool){
+    fMessenger = new DetectorConstructionMessenger(this);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
 DetectorConstruction::~DetectorConstruction(){;}
@@ -88,8 +109,7 @@ void DetectorConstruction::DefineMaterials(){;}
 G4VPhysicalVolume* DetectorConstruction::Construct(){
     
     //** World **//
-    G4Material* Galactic = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
-    G4Material* worldMaterial = Galactic;
+    G4Material* worldMaterial = G4NistManager::Instance()->FindOrBuildMaterial(fWorldMaterial);
     
     G4double worldSizeXY = 1. * CLHEP::meter;
     G4double worldSizeZ = 30. * CLHEP::meter;
@@ -130,7 +150,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
                                                     detectorMaterial,
                                                     "ssd.logic");
     
-    for(size_t i1=0;i1<4;i1++){
+    for(size_t i1=0;i1<5;i1++){
         new G4PVPlacement(0,
                           G4ThreeVector(0.,0.,fDetectorDistance[i1]),
                           ssdLogic,
@@ -195,6 +215,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
     if(fAngles.y()!=0.){
         rot->rotateY(fAngles.y());
     }
+    if(fAngles.z()!=0.){
+        rot->rotateZ(fAngles.z());
+    }
     
     new G4PVPlacement(rot,
                       G4ThreeVector(),
@@ -210,22 +233,29 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void DetectorConstruction::ConstructSDandField(){
-    G4LogicalVolume* crystalLogic = G4LogicalVolumeStore::GetInstance()->GetVolume("crystal.logic");
-    G4ChannelingOptrMultiParticleChangeCrossSection* testMany =
-    new G4ChannelingOptrMultiParticleChangeCrossSection();
-    testMany->AttachTo(crystalLogic);
-    G4cout << " Attaching biasing operator " << testMany->GetName()
-    << " to logical volume " << crystalLogic->GetName()
-    << G4endl;
-    
-    G4VSensitiveDetector* crystaldetector = new CrystalDetector("/crystaldetector");
-    G4SDManager::GetSDMpointer()->AddNewDetector(crystaldetector);
-    crystalLogic->SetSensitiveDetector(crystaldetector);
-    
+    if(fCrystalAmorphous == true){
+        G4LogicalVolume* crystalLogic = G4LogicalVolumeStore::GetInstance()->GetVolume("crystal.logic");
+        G4VSensitiveDetector* crystaldetector = new CrystalDetector("/crystaldetector");
+        G4SDManager::GetSDMpointer()->AddNewDetector(crystaldetector);
+        crystalLogic->SetSensitiveDetector(crystaldetector);
+    }
+    else{
+        G4LogicalVolume* crystalLogic = G4LogicalVolumeStore::GetInstance()->GetVolume("crystal.logic");
+        G4ChannelingOptrMultiParticleChangeCrossSection* testMany =
+            new G4ChannelingOptrMultiParticleChangeCrossSection();
+        testMany->AttachTo(crystalLogic);
+        G4cout << " Attaching biasing operator " << testMany->GetName()
+        << " to logical volume " << crystalLogic->GetName() << G4endl;
+
+        G4VSensitiveDetector* crystaldetector = new CrystalDetector("/crystaldetector");
+        G4SDManager::GetSDMpointer()->AddNewDetector(crystaldetector);
+        crystalLogic->SetSensitiveDetector(crystaldetector);
+    }
+        
     G4LogicalVolume* ssdLogic = G4LogicalVolumeStore::GetInstance()->GetVolume("ssd.logic");
     G4VSensitiveDetector* telescope = new SensitiveDetector("/telescope");
     G4SDManager::GetSDMpointer()->AddNewDetector(telescope);
-    for(unsigned int i1=0;i1<3;i1++){
+    for(unsigned int i1=0;i1<4;i1++){
         ssdLogic->SetSensitiveDetector(telescope);
     }
     

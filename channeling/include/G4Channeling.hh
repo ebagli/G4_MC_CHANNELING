@@ -128,6 +128,8 @@ private:
     
     const G4ThreeVector k010;
     G4ThreeVector fSpin;
+    
+    std::ofstream outfile;
 };
 
 #endif

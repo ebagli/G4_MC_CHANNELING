@@ -23,11 +23,11 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: G4EmStandardPhysicsSS_Channeling.cc 78932 2014-02-04 12:30:52Z vnivanch $
+// $Id: G4EmStandardPhysicsSS_channeling.cc 78932 2014-02-04 12:30:52Z vnivanch $
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   G4EmStandardPhysicsSS_Channeling
+// ClassName:   G4EmStandardPhysicsSS_channeling
 //
 // Author:      V.Ivanchenko 09.11.2005
 //
@@ -42,7 +42,7 @@
 //----------------------------------------------------------------------------
 //
 
-#include "G4EmStandardPhysicsSS_Channeling.hh"
+#include "G4EmStandardPhysicsSS_channeling.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4EmParameters.hh"
@@ -108,12 +108,12 @@
 // factory
 #include "G4PhysicsConstructorFactory.hh"
 //
-G4_DECLARE_PHYSCONSTR_FACTORY(G4EmStandardPhysicsSS_Channeling);
+G4_DECLARE_PHYSCONSTR_FACTORY(G4EmStandardPhysicsSS_channeling);
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4EmStandardPhysicsSS_Channeling::G4EmStandardPhysicsSS_Channeling(G4int ver)
-  : G4VPhysicsConstructor("G4EmStandardSS"), verbose(ver)
+G4EmStandardPhysicsSS_channeling::G4EmStandardPhysicsSS_channeling(G4int ver)
+  : G4VPhysicsConstructor("G4EmStandardSS_channeling"), verbose(ver)
 {
   G4EmParameters* param = G4EmParameters::Instance();
   param->SetDefaults();
@@ -128,12 +128,12 @@ G4EmStandardPhysicsSS_Channeling::G4EmStandardPhysicsSS_Channeling(G4int ver)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4EmStandardPhysicsSS_Channeling::~G4EmStandardPhysicsSS_Channeling()
+G4EmStandardPhysicsSS_channeling::~G4EmStandardPhysicsSS_channeling()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4EmStandardPhysicsSS_Channeling::ConstructParticle()
+void G4EmStandardPhysicsSS_channeling::ConstructParticle()
 {
   // gamma
   G4Gamma::Gamma();
@@ -164,7 +164,7 @@ void G4EmStandardPhysicsSS_Channeling::ConstructParticle()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4EmStandardPhysicsSS_Channeling::ConstructProcess()
+void G4EmStandardPhysicsSS_channeling::ConstructProcess()
 {
   if(verbose > 1) {
     G4cout << "### " << GetPhysicsName() << " Construct Processes " << G4endl;

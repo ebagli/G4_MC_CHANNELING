@@ -32,10 +32,18 @@
 #include "G4SystemOfUnits.hh"
 
 #include "Analysis.hh"
+#include "G4GenericMessenger.hh"
+
+#include "G4MPI_USE.hh"
+#ifdef G4MPI_USE
+#include "G4MPImanager.hh"
+#endif
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-RunAction::RunAction(): G4UserRunAction(){
+RunAction::RunAction():
+G4UserRunAction(),
+fFileName("out"){
     G4RunManager::GetRunManager()->SetPrintProgress(1);
     
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
@@ -62,6 +70,15 @@ RunAction::RunAction(): G4UserRunAction(){
     analysisManager->CreateNtupleDColumn("sz");
     analysisManager->FinishNtuple();
     
+    // -- Define messengers:
+    fChangeFileName =
+    new G4GenericMessenger(this, "/filename/","Change File Name" );
+    
+    //G4GenericMessenger::Command& changeFileName =
+    fChangeFileName->DeclareProperty("set",
+                                     fFileName,
+                                     "Set user name." );
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -73,9 +90,16 @@ RunAction::~RunAction(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void RunAction::BeginOfRunAction(const G4Run*){
+#ifdef G4MPI_USE
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    G4String fileName = "out";
-    analysisManager->OpenFile(fileName);
+    G4int rank = G4MPImanager::GetManager()->GetRank();
+    std::ostringstream fileName;
+    fileName << fFileName << rank;
+    analysisManager->OpenFile(fileName.str());
+#else
+    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+    analysisManager->OpenFile(fFileName);
+#endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

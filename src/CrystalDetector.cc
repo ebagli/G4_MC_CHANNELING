@@ -80,7 +80,9 @@ G4bool CrystalDetector::ProcessHits(G4Step*aStep,
     if(fChannelingID == -1){
         fChannelingID = G4PhysicsModelCatalog::Register("channeling");
     }
-
+    if(fChannelingID == -1){
+        return true;
+    }
     G4ChannelingTrackData* trackdata =
     (G4ChannelingTrackData*)(aStep->GetTrack()->GetAuxiliaryTrackInformation(fChannelingID));
 

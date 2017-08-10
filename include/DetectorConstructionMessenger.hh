@@ -62,9 +62,11 @@ class DetectorConstructionMessenger: public G4UImessenger
     G4UIdirectory* fMyXtalDirectory;
     G4UIdirectory* fMyDetDirectory;
     
+    G4UIcmdWithAString*  fWorldMaterial;
+    
     G4UIcmdWithAString*  fDetMaterialCmd;
     G4UIcmdWith3VectorAndUnit*  fDetSizesCmd;
-    G4UIcmdWithADoubleAndUnit*  fDetDistanceCmd[4];
+    G4UIcmdWithADoubleAndUnit*  fDetDistanceCmd[5];
     
     G4UIcmdWithAString*  fXtalMaterialCmd;
     G4UIcmdWith3VectorAndUnit* fXtalSizeCmd;

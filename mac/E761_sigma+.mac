@@ -5,7 +5,7 @@
 /mydet/setDistance3  +40. mm
 /mydet/setDistance4  +50. mm
 
-/xtal/setMaterial G4_Galactic
+/xtal/setMaterial G4_Si
 /xtal/setSize 50. 50. 45. mm
 /xtal/setAngle 0.0 0.0 0.0 degree
 /xtal/setBR 27.2893 0.0 0.0 m
@@ -25,5 +25,5 @@
 
 /gps/pos/type Point
 /gps/pos/centre 0. 0. -51. mm
-/run/beamOn 100000
+/run/beamOn 10000
 

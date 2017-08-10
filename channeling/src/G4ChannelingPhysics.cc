@@ -78,6 +78,7 @@ void G4ChannelingPhysics::ConstructProcess()
 
     G4ParticleTable::G4PTblDicIterator* aParticleIterator =
         G4ParticleTable::GetParticleTable()->GetIterator();
+
     aParticleIterator->reset();
     
     while( (*aParticleIterator)() ){

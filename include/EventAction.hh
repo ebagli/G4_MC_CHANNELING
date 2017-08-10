@@ -34,8 +34,6 @@
 #include <fstream>
 #include "G4PhysicsFreeVector.hh"
 
-class EventActionMessenger;
-
 class EventAction : public G4UserEventAction
 {
   public:

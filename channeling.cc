@@ -42,35 +42,58 @@
 #endif
 
 #include "QGSP_BIC.hh"
+#include "FTFP_BERT.hh"
 
-#include "G4EmStandardPhysicsSS_Channeling.hh"
+#include "G4EmStandardPhysics_option4_channeling.hh"
+#include "G4EmStandardPhysicsSS_channeling.hh"
 #include "PhysicsList.hh"
 #include "G4ChannelingPhysics.hh"
 #include "G4GenericBiasingPhysics.hh"
+
+#include "G4EmExtraPhysics.hh"
+#include "G4HadronElasticPhysics.hh"
+#include "G4HadronPhysicsFTFP_BERT.hh"
+#include "G4StoppingPhysics.hh"
+#include "G4IonPhysics.hh"
+#include "G4NeutronTrackingCut.hh"
+#define bONLY_CHANNELING
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int main(int argc,char** argv)
 {
+    G4bool amorphous = false;
+    
     // Construct the default run manager
     G4MTRunManager* runManager = new G4MTRunManager;
     runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores() - 2);
+    //runManager->SetNumberOfThreads(1);
 
     // Activate UI-command base scorer
     G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
     scManager->SetVerboseLevel(0);
 
+#ifdef bONLY_CHANNELING
+    G4VModularPhysicsList* physlist= new PhysicsList();
+    physlist->RegisterPhysics(new G4EmStandardPhysics_option4_channeling());
+    physlist->RegisterPhysics(new G4HadronElasticPhysics());
+    physlist->RegisterPhysics(new G4HadronPhysicsFTFP_BERT());
+    //physlist->RegisterPhysics(new G4StoppingPhysics());
+#else
+    G4VModularPhysicsList* physlist= new FTFP_BERT();
+    physlist->ReplacePhysics(new G4EmStandardPhysics_option4_channeling());
+#endif
     // Set mandatory initialization classes
-    G4VModularPhysicsList* physlist= new QGSP_BIC();
-    G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
-    physlist->RegisterPhysics(new G4ChannelingPhysics());
-    physlist->ReplacePhysics(new G4EmStandardPhysicsSS_Channeling());
-    biasingPhysics->PhysicsBiasAllCharged();
-    physlist->RegisterPhysics(biasingPhysics);
+    if(amorphous==false){
+        G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
+        physlist->RegisterPhysics(new G4ChannelingPhysics());
+        biasingPhysics->PhysicsBiasAllCharged();
+        physlist->RegisterPhysics(biasingPhysics);
+    }
     
     runManager->SetUserInitialization(physlist);
     runManager->SetUserInitialization(new UserActionInitialization());
-    runManager->SetUserInitialization(new DetectorConstruction());
+    runManager->SetUserInitialization(new DetectorConstruction(amorphous));
     
     // Get the pointer to the User Interface manager
     G4UImanager* UI = G4UImanager::GetUIpointer();  

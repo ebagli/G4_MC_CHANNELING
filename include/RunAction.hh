@@ -29,6 +29,7 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include "G4GenericMessenger.hh"
 
 class G4Run;
 
@@ -40,6 +41,10 @@ public:
     
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
+
+private:
+    G4String fFileName;
+    G4GenericMessenger*  fChangeFileName;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

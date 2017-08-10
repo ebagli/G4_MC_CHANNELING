@@ -24,11 +24,11 @@
 // ********************************************************************
 //
 //
-// $Id: G4EmStandardPhysicsSS_Channeling.hh 66704 2013-01-10 18:20:17Z gunter $
+// $Id: G4EmStandardPhysicsSS_channeling.hh 66704 2013-01-10 18:20:17Z gunter $
 //
 //---------------------------------------------------------------------------
 //
-// ClassName:   G4EmStandardPhysicsSS_Channeling
+// ClassName:   G4EmStandardPhysicsSS_channeling
 //
 // Author:      V.Ivanchenko 16.10.2014
 //
@@ -39,21 +39,21 @@
 // This class provides construction of default EM standard physics
 //
 
-#ifndef G4EmStandardPhysicsSS_Channeling_h
-#define G4EmStandardPhysicsSS_Channeling_h 1
+#ifndef G4EmStandardPhysicsSS_channeling_h
+#define G4EmStandardPhysicsSS_channeling_h 1
 
 #include "G4VPhysicsConstructor.hh"
 #include "globals.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class G4EmStandardPhysicsSS_Channeling : public G4VPhysicsConstructor
+class G4EmStandardPhysicsSS_channeling : public G4VPhysicsConstructor
 {
 public:
 
-  explicit G4EmStandardPhysicsSS_Channeling(G4int ver = 1);
+  explicit G4EmStandardPhysicsSS_channeling(G4int ver = 1);
 
-  virtual ~G4EmStandardPhysicsSS_Channeling();
+  virtual ~G4EmStandardPhysicsSS_channeling();
 
   virtual void ConstructParticle();
   virtual void ConstructProcess();

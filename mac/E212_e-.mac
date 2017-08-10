@@ -23,5 +23,5 @@
 
 /gps/pos/type Point
 /gps/pos/centre 0. 0. -6. mm
-/run/beamOn 100000
+/run/beamOn 1000
 

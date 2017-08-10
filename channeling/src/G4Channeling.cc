@@ -33,6 +33,16 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Box.hh"
 #include "G4ChargeState.hh"
+#include "G4LambdacPlus.hh"
+#include "G4AntiLambdacPlus.hh"
+#include "G4XibMinus.hh"
+#include "G4AntiXibMinus.hh"
+#include "G4XiMinus.hh"
+#include "G4AntiXiMinus.hh"
+#include "G4OmegaMinus.hh"
+#include "G4AntiOmegaMinus.hh"
+#include "G4Event.hh"
+#include "G4RunManager.hh"
 
 G4Channeling::G4Channeling():
 G4VDiscreteProcess("channeling"),
@@ -46,6 +56,7 @@ k010(G4ThreeVector(0.,1.,0.)){
         fChannelingID = G4PhysicsModelCatalog::Register("channeling");
     }
     fSpin = G4ThreeVector(0.,0.,0.);
+    //outfile.open("test.txt", std::ios_base::app);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -172,27 +183,75 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         const G4ParticleDefinition* pParticleDef   = pParticle->GetDefinition() ;
         
         fSpin                   = aTrack.GetPolarization();
-        G4double mass, charge, magMoment, spin, gamma, eta;
-        G4double omegac, muB, g_BMT, anomaly;
+        G4double mass, magMoment, spin;
+        G4double muB;
+        G4double g_BMT = 2.;
+        G4double anomaly = 0.;
+        G4double omegac = 0.;
+        G4double gamma = 0.;
+        G4double charge = 0.;
         G4double spinmag = fSpin.mag();
-
+        G4double elMoment = 0.005 * muB;
+        G4double eta = 0.;
+        
         if(spinmag!=0.){
-            mass      = pParticle->GetMass() ;
-            charge    = pParticle->GetCharge();
-            magMoment = pParticle->GetMagneticMoment();
+            mass      = pParticleDef->GetPDGMass() ;
+            charge    = pParticleDef->GetPDGCharge();
+            magMoment = pParticleDef->GetPDGMagneticMoment();
             spin      = pParticleDef->GetPDGSpin();
             gamma     = aTrack.GetTotalEnergy()/mass;
             eta       = 0.;
         
             omegac    = (CLHEP::eplus/mass)*CLHEP::c_light;
             muB       = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(mass/CLHEP::c_squared);
-            if(spin != 0. ){
-                g_BMT = (std::abs(magMoment)/muB)/spin;
+            elMoment  = 0.05 * muB;
+            
+            
+            if(pParticleDef == G4LambdacPlus::Definition() || pParticleDef == G4AntiLambdacPlus::Definition()){
+                anomaly = +0.3;
+                //elMoment = 1.977E-3 * muB;
+                magMoment = 2.*(anomaly + 1.)*spin*muB;
+            }
+            else if(pParticleDef == G4XibMinus::Definition() || pParticleDef == G4AntiXibMinus::Definition()){
+                anomaly = +1.38;
+                //elMoment = 0.;
+                magMoment = 2.*(anomaly + 1.)*spin*muB;
             }
             else{
-                g_BMT = 2.;
+                if(spin != 0. && muB != 0.){
+                    g_BMT = std::abs(magMoment)/muB/spin;
+                }
+                anomaly   = (g_BMT + 2.)/2.;
             }
-            anomaly   = (g_BMT - 2.)/2.;
+            
+            
+            if(spin != 0. && muB != 0.){
+                eta = (std::abs(elMoment)/muB)/spin;
+            }
+            else{
+                eta = 0.;
+            }
+            
+            if(pParticleDef->GetLeptonNumber() > 0. || pParticleDef->GetBaryonNumber() > 0. ){
+                anomaly = -anomaly;
+            }
+            else{
+                eta = -eta;
+            }
+            
+            /*
+            G4double muN = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(938.2720813*CLHEP::MeV/CLHEP::c_squared);
+            G4cout << "Expected precession (to be multiplied by channeling deflection angle): " << gamma*anomaly << G4endl;
+            G4cout << "Magnetic Dipole Moment [unit of mu_N]: " << magMoment / muN << G4endl;
+            G4cout << "Electric Dipole Moment [unit of mu_N]: " << elMoment / muN << G4endl;
+            G4cout << "Anomaly: " << anomaly << G4endl;
+            G4cout << "g: " << g_BMT << G4endl;
+            G4cout << "eta: " << eta << G4endl;
+            G4cout << "Mass: " << mass/CLHEP::GeV << G4endl;
+            G4cout << "Spin: " << spin << G4endl;
+            G4cout << "muB: " << muB/muN << G4endl;
+            while(!getchar());
+            */
         }
 
         do{
@@ -340,8 +399,8 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         nud /= stepTot;
         eld /= stepTot;
 
-        if(nud < 1.E-10) {nud = 1.E-10;}
-        if(eld < 1.E-10) {eld = 1.E-10;}
+        if(nud < 1.E-3) {nud = 1.E-3;}
+        if(eld < 1.E-3) {eld = 1.E-3;}
         
         GetTrackData(aTrack)->SetNuD(nud);
         GetTrackData(aTrack)->SetElD(eld);

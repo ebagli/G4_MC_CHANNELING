@@ -5,8 +5,8 @@
 /mydet/setDistance3  +40. mm
 /mydet/setDistance4  +50. mm
 
-/xtal/setMaterial G4_Galactic
-/xtal/setSize 50. 50. 10. mm
+/xtal/setMaterial G4_Si
+/xtal/setSize 50. 50. 50. mm
 /xtal/setAngle 0.0 0.0 0.0 degree
 /xtal/setBR 10. 0.0 0.0 m
 /xtal/setEC data/Si111pl

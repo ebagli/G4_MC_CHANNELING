@@ -1,0 +1,27 @@
+/mydet/setDetMaterial G4_Si
+/mydet/setSize 50. 50. 0.3 mm
+/mydet/setDistance1 -1. m
+/mydet/setDistance2  -0.9 m
+/mydet/setDistance3  +0.9 m
+/mydet/setDistance4  +1. m
+
+/xtal/setMaterial G4_W
+/xtal/setSize 50. 50. 2. mm
+/xtal/setAngle 0.0 0.0 0.0 rad
+/xtal/setBR 10. 0.0 0.0 m
+/xtal/setEC data/w111ax
+
+/run/initialize
+/gps/particle proton
+/gps/ene/mono 400. GeV
+/gps/ang/rot1 1 0 0
+/gps/ang/rot2 0 -1 0
+/gps/ang/type beam2d
+
+/gps/ang/sigma_x 10.E-6 rad
+/gps/ang/sigma_y 10.E-6 rad
+
+/gps/pos/type Point
+/gps/pos/centre 0. 0. -1.1 m
+/run/beamOn 10000
+
