@@ -191,7 +191,8 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         G4double gamma = 0.;
         G4double charge = 0.;
         G4double spinmag = fSpin.mag();
-        G4double elMoment = 0.005 * muB;
+        G4double elMoment = 0.;
+        G4double d = 0.05;
         G4double eta = 0.;
         
         if(spinmag!=0.){
@@ -204,7 +205,7 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         
             omegac    = (CLHEP::eplus/mass)*CLHEP::c_light;
             muB       = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(mass/CLHEP::c_squared);
-            elMoment  = 0.05 * muB;
+            elMoment  = 2.* d * muB * spin;
             
             
             if(pParticleDef == G4LambdacPlus::Definition() || pParticleDef == G4AntiLambdacPlus::Definition()){
@@ -226,7 +227,8 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             
             
             if(spin != 0. && muB != 0.){
-                eta = (std::abs(elMoment)/muB)/spin;
+                //eta = 0.5 * d / spin;
+                eta = d;
             }
             else{
                 eta = 0.;
@@ -235,9 +237,7 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             if(pParticleDef->GetLeptonNumber() > 0. || pParticleDef->GetBaryonNumber() > 0. ){
                 anomaly = -anomaly;
             }
-            else{
-                eta = -eta;
-            }
+            
             
             /*
             G4double muN = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(938.2720813*CLHEP::MeV/CLHEP::c_squared);
