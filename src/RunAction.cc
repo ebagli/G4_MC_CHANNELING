@@ -68,6 +68,7 @@ fFileName("out"){
     analysisManager->CreateNtupleDColumn("sx");
     analysisManager->CreateNtupleDColumn("sy");
     analysisManager->CreateNtupleDColumn("sz");
+    analysisManager->CreateNtupleDColumn("energy");
     analysisManager->FinishNtuple();
     
     // -- Define messengers:

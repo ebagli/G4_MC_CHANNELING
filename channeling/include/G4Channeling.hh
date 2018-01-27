@@ -35,6 +35,8 @@
 #include "G4ExtendedMaterial.hh"
 #include "G4LogicalCrystalVolume.hh"
 
+//#define bSaveTrajectoryToFileForChanneling
+
 class G4ChannelingTrackData;
 
 class G4Channeling : public G4VDiscreteProcess

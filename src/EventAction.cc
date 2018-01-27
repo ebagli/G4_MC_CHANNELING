@@ -71,6 +71,7 @@ void EventAction::EndOfEventAction(const G4Event* evt){
     G4double sx = 0.;
     G4double sy = 0.;
     G4double sz = 0.;
+    G4double energy = 0.;
 
     if(sdht_ID == -1) {
         G4String sdName;
@@ -99,6 +100,7 @@ void EventAction::EndOfEventAction(const G4Event* evt){
                 SensitiveDetectorHit* aHit = (*sdht)[i1];
                 if(aHit->GetLayerID()==i2) {
                     ssd[i2] = aHit->GetWorldPos();
+                    energy  = aHit->GetKinE();
                     bTotalHits++;
                 }
                 if(aHit->GetLayerID()==2) {
@@ -120,6 +122,7 @@ void EventAction::EndOfEventAction(const G4Event* evt){
     G4double efy;
     G4double nud;
     G4double eld;
+
 
     G4double steptot = 0.;
     G4double step;
@@ -207,6 +210,7 @@ void EventAction::EndOfEventAction(const G4Event* evt){
         analysisManager->FillNtupleDColumn(10, sx);
         analysisManager->FillNtupleDColumn(11, sy);
         analysisManager->FillNtupleDColumn(12, sz);
+        analysisManager->FillNtupleDColumn(13, energy);
         analysisManager->AddNtupleRow();
     }
 }

@@ -63,6 +63,7 @@ private:
     G4int fLayerID;
     G4ThreeVector fWorldPos;
     G4ThreeVector fSpin;
+    G4double fKinE;
     
 public:
     inline void SetLayerID(G4int z) { fLayerID = z; }
@@ -71,6 +72,9 @@ public:
     inline G4ThreeVector GetWorldPos() const { return fWorldPos; }
     inline void SetSpin(G4ThreeVector xyz) { fSpin = xyz; }
     inline G4ThreeVector GetSpin() const { return fSpin; }
+    inline void SetKinE(G4double xyz) { fKinE = xyz; }
+    inline G4double GetKinE() const { return fKinE; }
+
 };
 
 typedef G4THitsCollection<SensitiveDetectorHit>

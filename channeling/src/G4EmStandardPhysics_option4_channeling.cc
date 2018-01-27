@@ -120,7 +120,7 @@ G4_DECLARE_PHYSCONSTR_FACTORY(G4EmStandardPhysics_option4_channeling);
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4EmStandardPhysics_option4_channeling::G4EmStandardPhysics_option4_channeling(G4int ver, 
-							 const G4String&)
+                             const G4String&)
   : G4VPhysicsConstructor("G4EmStandard_opt4_channeling"), verbose(ver)
 {
   G4EmParameters* param = G4EmParameters::Instance();
@@ -247,7 +247,7 @@ void G4EmStandardPhysics_option4_channeling::ConstructProcess()
       // multiple scattering
       G4eCoulombScatteringModel* ssm = new G4eCoulombScatteringModel();
       G4CoulombScattering* ss = new G4CoulombScattering();
-      ss->SetEmModel(ssm, 1); 
+      ss->SetEmModel(ssm, 1);
 
       // ionisation
       G4eIonisation* eIoni = new G4eIonisation();
@@ -277,7 +277,7 @@ void G4EmStandardPhysics_option4_channeling::ConstructProcess()
       // multiple scattering
       G4eCoulombScatteringModel* ssm = new G4eCoulombScatteringModel();
       G4CoulombScattering* ss = new G4CoulombScattering();
-      ss->SetEmModel(ssm, 1); 
+      ss->SetEmModel(ssm, 1);
 
       // ionisation
       G4eIonisation* eIoni = new G4eIonisation();
@@ -307,7 +307,7 @@ void G4EmStandardPhysics_option4_channeling::ConstructProcess()
                particleName == "mu-"    ) {
 
       G4MuIonisation* muIoni = new G4MuIonisation();
-      muIoni->SetStepFunction(0.2, 50*um);          
+      muIoni->SetStepFunction(0.2, 50*um);
 
       ph->RegisterProcess(muIoni, particle);
       ph->RegisterProcess(mub, particle);
@@ -359,7 +359,7 @@ void G4EmStandardPhysics_option4_channeling::ConstructProcess()
       ph->RegisterProcess(kss, particle);
 
     } else if (particleName == "proton" ||
-	       particleName == "anti_proton") {
+           particleName == "anti_proton") {
 
       G4hIonisation* hIoni = new G4hIonisation();
       hIoni->SetStepFunction(0.1, 20*um);
@@ -371,11 +371,11 @@ void G4EmStandardPhysics_option4_channeling::ConstructProcess()
       //ph->RegisterProcess(pnuc, particle);
 
     } else if (particleName == "B+" ||
-	       particleName == "B-" ||
-	       particleName == "D+" ||
-	       particleName == "D-" ||
-	       particleName == "Ds+" ||
-	       particleName == "Ds-" ||
+           particleName == "B-" ||
+           particleName == "D+" ||
+           particleName == "D-" ||
+           particleName == "Ds+" ||
+           particleName == "Ds-" ||
                particleName == "anti_He3" ||
                particleName == "anti_alpha" ||
                particleName == "anti_deuteron" ||
@@ -390,7 +390,7 @@ void G4EmStandardPhysics_option4_channeling::ConstructProcess()
                particleName == "anti_xi_b-" ||
                particleName == "anti_xi-" ||
                particleName == "deuteron" ||
-	       particleName == "lambda_c+" ||
+           particleName == "lambda_c+" ||
                particleName == "omega-" ||
                particleName == "sigma_c+" ||
                particleName == "sigma_c++" ||

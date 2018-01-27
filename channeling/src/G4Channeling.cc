@@ -56,7 +56,9 @@ k010(G4ThreeVector(0.,1.,0.)){
         fChannelingID = G4PhysicsModelCatalog::Register("channeling");
     }
     fSpin = G4ThreeVector(0.,0.,0.);
-    //outfile.open("test.txt", std::ios_base::app);
+#ifdef bSaveTrajectoryToFileForChanneling
+    outfile.open("bSaveTrajectoryToFileForChanneling.txt", std::ios_base::app);
+#endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -116,6 +118,8 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
     
     G4double integrationLimit = fabs(posPost.z() - posPre.z());
     
+    //G4cout << aTrack.GetWeight() << G4endl;
+    //while(!getchar());
     if(integrationLimit > 0.){
         //----------------------------------------
         // Check if the crystal is bent
@@ -393,6 +397,11 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             }
             //----------------------------------------
 
+#ifdef bSaveTrajectoryToFileForChanneling
+            outfile << pos.x()/CLHEP::angstrom << "," << pos.y()/CLHEP::angstrom << "," << pos.z()/CLHEP::angstrom << ","
+            << mom.x()/CLHEP::keV << "," << mom.y()/CLHEP::keV << "," << mom.z()/CLHEP::keV
+            << "," << nud_temp << "," << eld_temp << G4endl;
+#endif
 
         } while(stepTot<integrationLimit);
         

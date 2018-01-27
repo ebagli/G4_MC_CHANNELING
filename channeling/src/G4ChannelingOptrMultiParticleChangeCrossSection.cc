@@ -121,3 +121,15 @@ OperationApplied( const G4BiasingProcessInterface*               callingProcess,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VBiasingOperation*
+G4ChannelingOptrMultiParticleChangeCrossSection::
+ProposeFinalStateBiasingOperation(const G4Track* track,
+                                  const G4BiasingProcessInterface* callingProcess){
+    
+    if ( fCurrentOperator ) return fCurrentOperator->
+        GetProposedFinalStateBiasingOperation (track, callingProcess);
+    else                    return 0;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

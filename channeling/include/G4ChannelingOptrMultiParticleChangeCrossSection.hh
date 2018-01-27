@@ -73,8 +73,7 @@ private:
                                    const G4BiasingProcessInterface* callingProcess);
   // -- Methods not used:
   virtual G4VBiasingOperation*
-  ProposeFinalStateBiasingOperation(const G4Track*, const G4BiasingProcessInterface*)
-  {return 0;}
+  ProposeFinalStateBiasingOperation(const G4Track*, const G4BiasingProcessInterface*);
   virtual G4VBiasingOperation*
   ProposeNonPhysicsBiasingOperation(const G4Track*, const G4BiasingProcessInterface*)
   {return 0;}
