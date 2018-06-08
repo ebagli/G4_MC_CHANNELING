@@ -26,104 +26,97 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include "DetectorConstruction.hh"
+#include "UserActionInitialization.hh"
+
+#ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
-#include "G4ScoringManager.hh"
+#else
+#include "G4RunManager.hh"
+#endif
+
 #include "G4UImanager.hh"
 
-#include "UserActionInitialization.hh"
-#include "DetectorConstruction.hh"
-
-#ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
-#endif
-
-#ifdef G4UI_USE
 #include "G4UIExecutive.hh"
-#endif
 
-#include "QGSP_BIC.hh"
-#include "FTFP_BERT.hh"
+#include "Randomize.hh"
 
-#include "G4EmStandardPhysics_option4_channeling.hh"
-#include "G4EmStandardPhysicsSS_channeling.hh"
 #include "PhysicsList.hh"
-#include "G4ChannelingPhysics.hh"
-#include "G4GenericBiasingPhysics.hh"
 
-#include "G4EmExtraPhysics.hh"
+#include "G4EmStandardPhysicsSS_channeling.hh"
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronPhysicsFTFP_BERT.hh"
-#include "G4StoppingPhysics.hh"
-#include "G4IonPhysics.hh"
-#include "G4NeutronTrackingCut.hh"
-#define bONLY_CHANNELING
+
+#include "G4ChannelingPhysics.hh"
+#include "G4GenericBiasingPhysics.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int main(int argc,char** argv)
 {
-    G4bool amorphous = false;
+    // Detect interactive mode (if no arguments) and define UI session
+    //
+    G4UIExecutive* ui = 0;
+    if ( argc == 1 ) {
+        ui = new G4UIExecutive(argc, argv);
+    }
     
+    // Choose the Random engine
+    G4Random::setTheEngine(new CLHEP::RanecuEngine);
+
     // Construct the default run manager
     G4MTRunManager* runManager = new G4MTRunManager;
     runManager->SetNumberOfThreads(G4Threading::G4GetNumberOfCores() - 2);
-    //runManager->SetNumberOfThreads(1);
 
-    // Activate UI-command base scorer
-    G4ScoringManager * scManager = G4ScoringManager::GetScoringManager();
-    scManager->SetVerboseLevel(0);
+    // Detector construction
+    runManager->SetUserInitialization(new DetectorConstruction(0));
 
-#ifdef bONLY_CHANNELING
+    // Physics list
     G4VModularPhysicsList* physlist= new PhysicsList();
-    physlist->RegisterPhysics(new G4EmStandardPhysics_option4_channeling());
     physlist->RegisterPhysics(new G4HadronElasticPhysics());
-    physlist->RegisterPhysics(new G4HadronPhysicsFTFP_BERT());
-    //physlist->RegisterPhysics(new G4StoppingPhysics());
-#else
-    G4VModularPhysicsList* physlist= new FTFP_BERT();
-    physlist->ReplacePhysics(new G4EmStandardPhysics_option4_channeling());
-#endif
-    // Set mandatory initialization classes
-    if(amorphous==false){
-        G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
-        physlist->RegisterPhysics(new G4ChannelingPhysics());
-        biasingPhysics->PhysicsBiasAllCharged();
-        physlist->RegisterPhysics(biasingPhysics);
-    }
+    //physlist->RegisterPhysics(new G4HadronPhysicsFTFP_BERT());
+    physlist->RegisterPhysics(new G4EmStandardPhysicsSS_channeling());
+    physlist->SetDefaultCutValue(10.*CLHEP::cm);
+    
+    G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
+    physlist->RegisterPhysics(new G4ChannelingPhysics());
+    biasingPhysics->PhysicsBiasAllCharged();
+    physlist->RegisterPhysics(biasingPhysics);
     
     runManager->SetUserInitialization(physlist);
+
+    // User action initialization
     runManager->SetUserInitialization(new UserActionInitialization());
-    runManager->SetUserInitialization(new DetectorConstruction(amorphous));
+    
+    // Initialize visualization
+    //
+    G4VisManager* visManager = new G4VisExecutive;
+    visManager->Initialize();
     
     // Get the pointer to the User Interface manager
-    G4UImanager* UI = G4UImanager::GetUIpointer();  
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
     
-    if(argc!=1) {
-        // Batch mode
+    // Process macro or start UI session
+    //
+    if ( ! ui ) {
+        // batch mode
         G4String command = "/control/execute ";
         G4String fileName = argv[1];
-        UI->ApplyCommand(command+fileName);
+        UImanager->ApplyCommand(command+fileName);
     }
-    
     else {
-        // Define visualization and UI terminal for interactive mode
-#ifdef G4VIS_USE
-        G4VisManager* visManager = new G4VisExecutive;
-        visManager->Initialize();
-#endif
-        
-#ifdef G4UI_USE
-        G4UIExecutive * ui = new G4UIExecutive(argc,argv);
+        // interactive mode
         ui->SessionStart();
         delete ui;
-#endif
-        
-#ifdef G4VIS_USE
-        delete visManager;
-#endif
     }
     
     // Job termination
+    // Free the store: user actions, physics_list and detector_description are
+    // owned and deleted by the run manager, so they should not be deleted
+    // in the main() program !
+    
+    delete visManager;
     delete runManager;
     
     return 0;

@@ -62,10 +62,10 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DetectorConstruction::DetectorConstruction():
-fECfileName("Si220pl"),
+fECfileName("data/Si220pl"),
 fECOfileName(""),
 fMaterialName("G4_Si"),
-fSizes(G4ThreeVector(0.,0.,0.)),
+fSizes(G4ThreeVector(1.,1.,1.)),
 fBR(G4ThreeVector(0.,0.,0.)),
 fBRFileName(""),
 fAngles(G4ThreeVector(0.,0.,0.)),
@@ -80,10 +80,10 @@ fCrystalAmorphous(false){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DetectorConstruction::DetectorConstruction(G4bool aBool):
-fECfileName("Si220pl"),
+fECfileName("data/Si220pl"),
 fECOfileName(""),
 fMaterialName("G4_Si"),
-fSizes(G4ThreeVector(0.,0.,0.)),
+fSizes(G4ThreeVector(1.,1.,1.)),
 fBR(G4ThreeVector(0.,0.,0.)),
 fBRFileName(""),
 fAngles(G4ThreeVector(0.,0.,0.)),
@@ -196,11 +196,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct(){
 
     if(fBRFileName != ""){
         crystalChannelingData->SetBR(fBRFileName);
+//        for(int i=0;i<100;i++){
+//            G4double z = fSizes.z()*i/100;
+//            G4ThreeVector pos = G4ThreeVector(z,z,z);
+//            G4cout << i << " " << z << " " << crystalChannelingData->GetBR(pos).x()/CLHEP::meter << G4endl;
+//        }
     }
     else if(fBR!=G4ThreeVector()){
         crystalChannelingData->SetBR(fBR.x());
     }
-    
+
+   // while(!getchar());
+
     G4LogicalCrystalVolume* crystalLogic = new G4LogicalCrystalVolume(crystalSolid,
                                                                       Crystal,
                                                                       "crystal.logic");

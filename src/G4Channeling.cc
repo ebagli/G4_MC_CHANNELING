@@ -41,8 +41,11 @@
 #include "G4AntiXiMinus.hh"
 #include "G4OmegaMinus.hh"
 #include "G4AntiOmegaMinus.hh"
+#include "G4SigmaPlus.hh"
+#include "G4AntiSigmaPlus.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
+#include "G4EventManager.hh"
 
 G4Channeling::G4Channeling():
 G4VDiscreteProcess("channeling"),
@@ -110,7 +113,27 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
     
     G4StepPoint* postStepPoint = aTrack.GetStep()->GetPostStepPoint();
     G4StepPoint* preStepPoint = aTrack.GetStep()->GetPreStepPoint();
+    
+    G4double mass = aTrack.GetDynamicParticle()->GetDefinition()->GetPDGMass();
+    G4double gamma = aTrack.GetTotalEnergy()/mass;
+    G4double beta = aTrack.GetVelocity()/CLHEP::c_light;
+    G4double m_e = CLHEP::electron_mass_c2;
+    G4double Tmax = 2. * m_e * gamma * gamma * beta * beta;
+    Tmax /= (1. + 2.*gamma*m_e/mass + m_e*m_e/mass/mass);
+    G4double T = aTrack.GetStep()->GetTotalEnergyDeposit() - aTrack.GetStep()->GetNonIonizingEnergyDeposit();
+    G4double mommod = aTrack.GetStep()->GetPreStepPoint()->GetMomentum().mag();
+    G4double theta_sc_el = sqrt(2.*m_e*T*(1.-T/Tmax))/mommod;
+   
+    /*
+    G4cout << 2.*m_e*T/CLHEP::eV << G4endl;
+    G4cout << T/Tmax << G4endl;
+    G4cout << mommod/CLHEP::eV << G4endl;
+    G4cout << aTrack.GetStep()->GetTotalEnergyDeposit()/CLHEP::eV << G4endl;
+    G4cout << aTrack.GetStep()->GetNonIonizingEnergyDeposit()/CLHEP::eV << G4endl;
 
+    while(!getchar());
+    */
+    
     G4ThreeVector posPost = postStepPoint->GetPosition();
     aLCV->RotateToLattice(posPost);
     G4ThreeVector posPre = preStepPoint->GetPosition();
@@ -172,7 +195,7 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         G4double efx =0., efy    =0.;
         G4double nud_temp =0., eld_temp    =0.;
 
-        G4double beta = aTrack.GetVelocity()/CLHEP::c_light;
+        //G4double beta = aTrack.GetVelocity()/CLHEP::c_light;
         G4double Z = GetParticleDefinition(aTrack)->GetPDGCharge();
         
         const G4double oneSixth = 1./6.;
@@ -187,12 +210,13 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         const G4ParticleDefinition* pParticleDef   = pParticle->GetDefinition() ;
         
         fSpin                   = aTrack.GetPolarization();
-        G4double mass, magMoment, spin;
+        //G4double mass
+        G4double magMoment, spin;
         G4double muB;
         G4double g_BMT = 2.;
         G4double anomaly = 0.;
         G4double omegac = 0.;
-        G4double gamma = 0.;
+        //G4double gamma = 0.;
         G4double charge = 0.;
         G4double spinmag = fSpin.mag();
         G4double elMoment = 0.;
@@ -200,17 +224,18 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         G4double eta = 0.;
         
         if(spinmag!=0.){
-            mass      = pParticleDef->GetPDGMass() ;
+            //mass      = pParticleDef->GetPDGMass() ;
             charge    = pParticleDef->GetPDGCharge();
             magMoment = pParticleDef->GetPDGMagneticMoment();
             spin      = pParticleDef->GetPDGSpin();
-            gamma     = aTrack.GetTotalEnergy()/mass;
+            //gamma     = aTrack.GetTotalEnergy()/mass;
             eta       = 0.;
         
             omegac    = (CLHEP::eplus/mass)*CLHEP::c_light;
             muB       = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(mass/CLHEP::c_squared);
             elMoment  = 2.* d * muB * spin;
-            
+            G4double muN = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(938.2720813*CLHEP::MeV/CLHEP::c_squared);
+
             
             if(pParticleDef == G4LambdacPlus::Definition() || pParticleDef == G4AntiLambdacPlus::Definition()){
                 anomaly = +0.3;
@@ -221,6 +246,14 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
                 anomaly = +1.38;
                 //elMoment = 0.;
                 magMoment = 2.*(anomaly + 1.)*spin*muB;
+            }
+            else if(pParticleDef == G4SigmaPlus::Definition() || pParticleDef == G4AntiSigmaPlus::Definition()){
+                //anomaly = +1.38;
+                //elMoment = 0.;
+                magMoment = 2.458 * muN;
+                g_BMT = std::abs(magMoment)/muB/spin;
+                anomaly   = -(g_BMT - 2.)/2.;
+
             }
             else{
                 if(spin != 0. && muB != 0.){
@@ -244,8 +277,8 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             
             
             /*
-            G4double muN = 0.5*CLHEP::eplus*CLHEP::hbar_Planck/(938.2720813*CLHEP::MeV/CLHEP::c_squared);
             G4cout << "Expected precession (to be multiplied by channeling deflection angle): " << gamma*anomaly << G4endl;
+            G4cout << "Expected precession (to be multiplied by channeling deflection angle in rad): " << gamma*anomaly*180./3.14 << G4endl;
             G4cout << "Magnetic Dipole Moment [unit of mu_N]: " << magMoment / muN << G4endl;
             G4cout << "Electric Dipole Moment [unit of mu_N]: " << elMoment / muN << G4endl;
             G4cout << "Anomaly: " << anomaly << G4endl;
@@ -253,11 +286,32 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             G4cout << "eta: " << eta << G4endl;
             G4cout << "Mass: " << mass/CLHEP::GeV << G4endl;
             G4cout << "Spin: " << spin << G4endl;
+            G4cout << "Spin: " << pParticleDef->GetPDGIsospin() << G4endl;
             G4cout << "muB: " << muB/muN << G4endl;
             while(!getchar());
             */
+            
         }
 
+        // Scattering from energy deposition in electrons
+        
+         if(theta_sc_el!=0.0){
+            G4double eld_sc_el = GetTrackData(aTrack)->GetElD();
+            G4double rot_angle = G4UniformRand()*CLHEP::twopi;
+            G4double rot_mod   = G4RandGauss::shoot(0.,theta_sc_el*eld_sc_el);
+            mom.rotateX(cos(rot_angle)*rot_mod);
+            mom.rotateY(sin(rot_angle)*rot_mod);
+            /*
+            G4cout << rot_angle << G4endl;
+            G4cout << rot_mod << G4endl;
+            G4cout << theta_sc_el << G4endl;
+            G4cout << eld_sc_el << G4endl;
+            while(!getchar());
+            */
+        }
+        
+        //
+        
         do{
             //----------------------------------------
             // Limit the variable step length for the
@@ -337,8 +391,6 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             efx += (step * GetMatData(aTrack)->GetEFX()->GetEC(pos));
             efy += (step * GetMatData(aTrack)->GetEFY()->GetEC(pos));
             
-            
-            
             //----------------------------------------
             // Spin Precession
             //----------------------------------------
@@ -397,11 +449,6 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             }
             //----------------------------------------
 
-#ifdef bSaveTrajectoryToFileForChanneling
-            outfile << pos.x()/CLHEP::angstrom << "," << pos.y()/CLHEP::angstrom << "," << pos.z()/CLHEP::angstrom << ","
-            << mom.x()/CLHEP::keV << "," << mom.y()/CLHEP::keV << "," << mom.z()/CLHEP::keV
-            << "," << nud_temp << "," << eld_temp << G4endl;
-#endif
 
         } while(stepTot<integrationLimit);
         
@@ -419,6 +466,18 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
         
         GetTrackData(aTrack)->SetMomCh(mom);
         GetTrackData(aTrack)->SetPosCh(pos);
+        
+        
+#ifdef bSaveTrajectoryToFileForChanneling
+        G4int eID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
+        
+        outfile << pos.x()/CLHEP::angstrom << "," << pos.y()/CLHEP::angstrom << "," << pos.z()/CLHEP::angstrom
+        << "," << mom.x()/CLHEP::keV << "," << mom.y()/CLHEP::keV << "," << mom.z()/CLHEP::keV
+        << "," << nud << "," << eld << "," << efx/stepTot
+        << "," << GetMatData(aTrack)->GetPot()->GetEC(pos) << "," << eID << "," << stepTot/CLHEP::mm
+        << "," << fSpin.x() << "," << fSpin.y()<< "," << fSpin.z() << G4endl;
+#endif
+
         //G4cout << pos.x() << " " << pos.z() << " " << nud << " " << eld << G4endl;
         return true;
     }
@@ -557,7 +616,8 @@ PostStepDoIt(const G4Track& aTrack,
         // if the volume has no lattice it resets the density factors
         GetTrackData(aTrack)->Reset();
     }
-    
+    //G4cout << "Weight " << aParticleChange.GetParentWeight() << G4endl;
+
     return &aParticleChange;
 }
 

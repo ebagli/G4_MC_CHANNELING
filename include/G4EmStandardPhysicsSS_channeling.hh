@@ -23,31 +23,53 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-#include "G4ChannelingTrackData.hh"
-#include "G4Channeling.hh"
-#include "G4SystemOfUnits.hh"
+//
+// $Id: G4EmStandardPhysicsSS_channeling.hh 66704 2013-01-10 18:20:17Z gunter $
+//
+//---------------------------------------------------------------------------
+//
+// ClassName:   G4EmStandardPhysicsSS_channeling
+//
+// Author:      V.Ivanchenko 16.10.2014
+//
+// Modified:
+//
+//----------------------------------------------------------------------------
+//
+// This class provides construction of default EM standard physics
+//
 
-G4ChannelingTrackData::G4ChannelingTrackData()
-: G4VAuxiliaryTrackInformation(),
-fDBL(G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX)),
-fMomCh(fDBL),
-fPosCh(fDBL),
-fNuD(1.),
-fElD(1.),
-fEFX(0.),
-fEFY(0.){;}
+#ifndef G4EmStandardPhysicsSS_channeling_h
+#define G4EmStandardPhysicsSS_channeling_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+#include "G4VPhysicsConstructor.hh"
+#include "G4EmParticleList.hh"
+#include "globals.hh"
 
-G4ChannelingTrackData::~G4ChannelingTrackData(){;}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+class G4EmStandardPhysicsSS_channeling : public G4VPhysicsConstructor
+{
+public:
+    
+    explicit G4EmStandardPhysicsSS_channeling(G4int ver = 1);
+    
+    virtual ~G4EmStandardPhysicsSS_channeling();
+    
+    virtual void ConstructParticle();
+    virtual void ConstructProcess();
+    
+private:
+    G4int  verbose;
+    //G4EmParticleList partList;
+};
 
-void G4ChannelingTrackData::Print() const {
-    G4cout << "Nuclei Density Ratio: " << fNuD << G4endl;
-    G4cout << "Electron Density Ratio: " << fElD << G4endl;
-    G4cout << "Channeling Momentum (GeV/c): " << fMomCh/CLHEP::GeV << G4endl;
-    G4cout << "Channeling Position (angstrom): " << fPosCh/CLHEP::angstrom << G4endl;
-}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+#endif
+
+
+
+
+
+
