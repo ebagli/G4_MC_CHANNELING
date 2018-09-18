@@ -26,6 +26,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+//#define bCALC_MEAN_SHIFT
+
 #include "DetectorConstruction.hh"
 #include "UserActionInitialization.hh"
 
@@ -51,6 +53,7 @@
 #include "G4ChannelingPhysics.hh"
 #include "G4GenericBiasingPhysics.hh"
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int main(int argc,char** argv)
@@ -74,11 +77,13 @@ int main(int argc,char** argv)
 
     // Physics list
     G4VModularPhysicsList* physlist= new PhysicsList();
+#ifndef bCALC_MEAN_SHIFT
     physlist->RegisterPhysics(new G4HadronElasticPhysics());
     //physlist->RegisterPhysics(new G4HadronPhysicsFTFP_BERT());
     physlist->RegisterPhysics(new G4EmStandardPhysicsSS_channeling());
     physlist->SetDefaultCutValue(10.*CLHEP::cm);
-    
+#endif
+
     G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
     physlist->RegisterPhysics(new G4ChannelingPhysics());
     biasingPhysics->PhysicsBiasAllCharged();

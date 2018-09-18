@@ -100,10 +100,10 @@ void EventAction::EndOfEventAction(const G4Event* evt){
                 SensitiveDetectorHit* aHit = (*sdht)[i1];
                 if(aHit->GetLayerID()==i2) {
                     ssd[i2] = aHit->GetWorldPos();
-                    energy  = aHit->GetKinE();
                     bTotalHits++;
                 }
                 if(aHit->GetLayerID()==2) {
+                    energy  = aHit->GetKinE();
                     sx   = (aHit->GetSpin()).x();
                     sy   = (aHit->GetSpin()).y();
                     sz   = (aHit->GetSpin()).z();

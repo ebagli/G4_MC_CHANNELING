@@ -24,6 +24,9 @@
 // ********************************************************************
 //
 
+//#define bCALC_MEAN_SHIFT
+
+
 #include "G4Channeling.hh"
 
 #include "Randomize.hh"
@@ -331,22 +334,39 @@ G4bool G4Channeling::UpdateParameters(const G4Track& aTrack){
             
             GetEF(aTrack,pos,efxy);
             posk1 = step / mom.z() * mom;
+            
+#ifndef bCALC_MEAN_SHIFT
             momk1 = step / beta * Z * efxy;
+#else
+            momk1 = G4ThreeVector();
+#endif
             if(isBent) momk1.setX(momk1.x() - step * mom.z() * beta / (GetMatData(aTrack)->GetBR(pos)).x());
             
             GetEF(aTrack,pos_temp = pos + posk1 * 0.5,efxy);
             posk2 = step / mom.z() * (mom + momk1 * 0.5);
+#ifndef bCALC_MEAN_SHIFT
             momk2 = step / beta * Z * efxy;
+#else
+            momk2 = G4ThreeVector();
+#endif
             if(isBent) momk2.setX(momk2.x() - step * mom.z() * beta / (GetMatData(aTrack)->GetBR(pos_temp)).x());
 
             GetEF(aTrack,pos_temp = pos + posk2 * 0.5,efxy);
             posk3 = step / mom.z() * (mom + momk2 * 0.5);
+#ifndef bCALC_MEAN_SHIFT
             momk3 = step / beta * Z * efxy;
+#else
+            momk3 = G4ThreeVector();
+#endif
             if(isBent) momk3.setX(momk3.x() - step * mom.z() * beta / (GetMatData(aTrack)->GetBR(pos_temp)).x());
             
             GetEF(aTrack,pos_temp = pos + posk3,efxy);
             posk4 = step / mom.z() * (mom + momk3);
+#ifndef bCALC_MEAN_SHIFT
             momk4 = step / beta * Z * efxy;
+#else
+            momk4 = G4ThreeVector();
+#endif
             if(isBent) momk4.setX(momk4.x() - step * mom.z() * beta / (GetMatData(aTrack)->GetBR(pos_temp)).x());
 
             pos = pos + oneSixth * (posk1 + 2.*posk2 + 2.*posk3 + posk4);
