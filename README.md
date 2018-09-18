@@ -1,4 +1,5 @@
 # Geant4 Channeling Simulation
+Enrico Bagli - INFN (Italy) bagli@fe.infn.it
 
 ## 1. Introduction
 The application simulates channeling in a straight or bent crystal via Geant4.
