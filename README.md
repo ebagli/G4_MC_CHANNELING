@@ -1,14 +1,16 @@
-## Introduction
+# Geant4 Channeling Simulation
+
+## 1. Introduction
 The application simulates channeling in a straight or bent crystal via Geant4.
 Charged particles impinging on a crystal can be captured into the channeling regime provided that their trajectories are aligned with crystalline planes or axes within the critical angle for channeling. Under such circumstance, particle motion is confined within the potential well between atomic planes or axes.
 
 Channeling is simulated by including [DYNECHARM++](http://www.sciencedirect.com/science/article/pii/S0168583X1300308X) and the results of the [ECHARM software](http://journals.aps.org/pre/abstract/10.1103/PhysRevE.81.026708) into the [Geant4 channeling package](https://link.springer.com/article/10.1140/epjc/s10052-014-2996-y). DYNECHARM++ allows the tracking of a relativistic charged particle inside a crystalline medium via the numerical integration of the classical equations of motion. The continuum potential approximation proposed by Lindhard is used. ECHARM is a software for the calculation of the potential and related physical quantities experienced by a particle traversing an aligned periodic complex atomic structure. The software uses classical physics equations and the expansion of periodic functions as a Fourier series. The Geant4 channeling package is an extension of the Geant4 toolkit for the simulation of the channeling effect.
 
 
-## Experimental Setup
+## 2. Experimental Setup
 The setup is composed by a crystal and two pairs of detectors to reveal the incoming and the outgoing angle of the particle from the crystal.
 
-## Installation
+## 3. Installation
 The application requires [Geant4 10.3](www.geant4.org).
 Geant4 is a toolkit for the simulation of the passage of particles through matter.
 Its areas of application include high energy, nuclear and accelerator physics, as well as studies in medical and space science.
@@ -21,11 +23,11 @@ The source code can be found also on [GitHub](https://github.com/Geant4/geant4/t
 
 After the installation of the Geant4 10.3 libraries, the code can be compiled via [CMake](www.cmake.org).
 
-## Usage
+## 4. Usage
 The application can be launched via the `channeling` executable and the macros in the `mac` directory, e.g. `./channeling mac/H8_PL01.mac`.
 
 
-## Output
+## 5. Output
 The output of the application is a [ROOT](https://root.cern.ch) file with a tree that contains the particle incoming and outgoing angle from the crystal, the average electrid field and nuclei/electron densities experienced by the particle. Only the primary particles are detected.
 
 - `angXin` - particle horizontal incoming angle at the crystal in µrad
@@ -38,8 +40,12 @@ The output of the application is a [ROOT](https://root.cern.ch) file with a tree
 - `efy` - average vertical electric field experienced under channeling by the particle
 - `nud` - average nuclei density experienced under channeling by the particle
 - `eld` - average electron density experienced under channeling by the particle
+- `sx` - X spin component of the outgoing channeled particle
+- `sy` - Y spin component of the outgoing channeled particle
+- `sz` - Z spin component of the outgoing channeled particle
+- `energy` - the channeled particle energy in MeV
 
-## Macros
+## 6. Macros
 The `.mac` files contain macro command that modify dynamically the setup.
 The primary beam properties can be configured via [General Particle Source - GPS - commands](https://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html) of Geant4.
 
