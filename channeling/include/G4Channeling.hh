@@ -35,8 +35,6 @@
 #include "G4ExtendedMaterial.hh"
 #include "G4LogicalCrystalVolume.hh"
 
-//#define bSaveTrajectoryToFileForChanneling
-
 class G4ChannelingTrackData;
 
 class G4Channeling : public G4VDiscreteProcess
@@ -65,9 +63,6 @@ private:
     G4StepPoint* GetPre(const G4Track& aTrack){return aTrack.GetStep()->GetPreStepPoint();}
     G4StepPoint* GetPost(const G4Track& aTrack){return aTrack.GetStep()->GetPostStepPoint();}
     
-private:
-    G4Channeling(G4Channeling&);
-    G4Channeling& operator=(const G4Channeling& right);
     
 private:
     G4ChannelingMaterialData* GetMatData(const G4Track& aTrack){
@@ -129,9 +124,6 @@ private:
     G4double fTransverseVariationMax;
     
     const G4ThreeVector k010;
-    G4ThreeVector fSpin;
-    
-    std::ofstream outfile;
 };
 
 #endif

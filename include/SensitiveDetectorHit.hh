@@ -60,12 +60,15 @@ public:
     virtual void Print();
     
 private:
+    G4int fTrackID;
     G4int fLayerID;
     G4ThreeVector fWorldPos;
     G4ThreeVector fSpin;
     G4double fKinE;
     
 public:
+    inline void SetTrackID(G4int z) { fTrackID = z; }
+    inline G4int GetTrackID() const { return fTrackID; }
     inline void SetLayerID(G4int z) { fLayerID = z; }
     inline G4int GetLayerID() const { return fLayerID; }
     inline void SetWorldPos(G4ThreeVector xyz) { fWorldPos = xyz; }
